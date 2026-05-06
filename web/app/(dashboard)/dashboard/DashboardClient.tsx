@@ -2,10 +2,12 @@
 
 import { format } from "date-fns";
 import Link from "next/link";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, Zap, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 interface Props {
   user: { name: string; field: string; yearsExp: string; niche: string };
+  autopilotEnabled: boolean;
   stats: {
     totalApplied: number; totalViewed: number; totalReplied: number;
     totalInterview: number; totalRejected: number; replyRate: number; avgAts: number | null;
@@ -54,9 +56,43 @@ function MiniChart({ data }: { data: number[] }) {
   );
 }
 
-export default function DashboardClient({ user, stats, recentApps, upcomingInterviews, dailyBars }: Props) {
+export default function DashboardClient({ user, autopilotEnabled: initAutopilot, stats, recentApps, upcomingInterviews, dailyBars }: Props) {
   const today = new Date();
   const isEmpty = stats.totalApplied === 0;
+
+  const [autopilot, setAutopilot]     = useState(initAutopilot);
+  const [toggling,  setToggling]      = useState(false);
+  const [running,   setRunning]       = useState(false);
+  const [runResult, setRunResult]     = useState<string | null>(null);
+
+  const toggleAutopilot = async () => {
+    setToggling(true);
+    const next = !autopilot;
+    try {
+      await fetch("/api/user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ autopilotEnabled: next }),
+      });
+      setAutopilot(next);
+    } finally {
+      setToggling(false);
+    }
+  };
+
+  const runNow = async () => {
+    setRunning(true);
+    setRunResult(null);
+    try {
+      const res  = await fetch("/api/autopilot/run", { method: "POST" });
+      const data = await res.json();
+      setRunResult(`Found ${data.discovered} new jobs · Applied to ${data.applied} · ${data.queued} queued for browser`);
+    } catch {
+      setRunResult("Run failed — check your profile is complete");
+    } finally {
+      setRunning(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-12 gap-3">
@@ -307,6 +343,55 @@ export default function DashboardClient({ user, stats, recentApps, upcomingInter
             Score appears once applications are sent
           </div>
         )}
+      </div>
+
+      {/* ── AUTO-PILOT TOGGLE · col 1–12 ── */}
+      <div className="col-span-12 rounded-card p-5 flex items-center justify-between gap-4"
+        style={{ background: autopilot ? "var(--ink)" : "var(--card-off)", border: "1px solid var(--border)" }}>
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: autopilot ? "var(--lime)" : "rgba(24,25,26,0.08)" }}>
+            <Zap size={16} style={{ color: autopilot ? "var(--lime-dark)" : "var(--ink-3)" }} />
+          </div>
+          <div>
+            <div className="text-sm font-semibold" style={{ color: autopilot ? "var(--lime)" : "var(--ink)" }}>
+              Auto-pilot {autopilot ? "is ON" : "is OFF"}
+            </div>
+            <div className="text-xs mt-0.5" style={{ color: autopilot ? "rgba(204,232,50,0.6)" : "var(--ink-3)" }}>
+              {autopilot
+                ? "Discovering jobs + applying daily at 06:00 UTC · Tailored resume + cover letter per job"
+                : "Turn on to automatically discover and apply to matching jobs every day"}
+            </div>
+            {runResult && (
+              <div className="text-xs mt-1.5 font-medium" style={{ color: autopilot ? "var(--lime)" : "var(--ink-2)" }}>
+                {runResult}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {autopilot && (
+            <button
+              onClick={runNow}
+              disabled={running}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-40"
+              style={{ background: "rgba(204,232,50,0.15)", color: "var(--lime)" }}
+            >
+              {running ? <Loader2 size={12} className="animate-spin" /> : <Zap size={12} />}
+              {running ? "Running…" : "Run now"}
+            </button>
+          )}
+          <button
+            onClick={toggleAutopilot}
+            disabled={toggling}
+            className="relative w-12 h-6 rounded-full transition-colors flex-shrink-0 disabled:opacity-50"
+            style={{ background: autopilot ? "var(--lime)" : "rgba(24,25,26,0.15)" }}
+          >
+            <div className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all duration-200"
+              style={{ left: autopilot ? "calc(100% - 1.25rem)" : "0.25rem" }} />
+          </button>
+        </div>
       </div>
 
       {/* ── STATS SUMMARY · col 9–12 ── */}

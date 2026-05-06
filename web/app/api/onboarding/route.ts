@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
 
   await connectDB();
 
+  // 1. Persist to MongoDB — this is the source of truth.
   await User.findOneAndUpdate(
     { clerkId: userId },
     {
@@ -63,18 +64,25 @@ export async function POST(req: NextRequest) {
     { upsert: true, new: true }
   );
 
-  // Mark onboarding complete in Clerk session metadata
-  await clerk.users.updateUser(userId, {
-    publicMetadata: { onboardingComplete: true },
-  });
+  // 2. Best-effort: sync to Clerk JWT publicMetadata.
+  // Wrapped in try-catch so a Clerk API hiccup never blocks the response.
+  // The __landed_ob cookie (step 3) is the immediate fallback anyway.
+  try {
+    await clerk.users.updateUser(userId, {
+      publicMetadata: { onboardingComplete: true },
+    });
+  } catch (clerkErr) {
+    console.error("[onboarding] Clerk metadata update failed (non-fatal):", clerkErr);
+  }
 
-  // Set a long-lived cookie immediately so the middleware can unblock the user
-  // before Clerk's JWT propagates the updated publicMetadata (~60 s delay).
+  // 3. Set a long-lived cookie immediately so the middleware can unblock the
+  // user before Clerk's JWT propagates the updated publicMetadata (~60 s delay).
   const response = NextResponse.json({ success: true });
   response.cookies.set(ONBOARDING_COOKIE, "1", {
     path: "/",
     httpOnly: false,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365 * 5, // 5 years
   });
   return response;

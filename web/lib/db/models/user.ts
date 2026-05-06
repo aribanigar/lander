@@ -76,6 +76,10 @@ export interface IUser extends Document {
   baytSession?: string;
   baytSessionUpdatedAt?: Date;
 
+  // Auto-pilot
+  autopilotEnabled: boolean;
+  autopilotLastRanAt?: Date;
+
   // Plan
   plan: "free" | "starter" | "pro" | "unlimited";
 
@@ -147,6 +151,9 @@ const UserSchema = new Schema<IUser>(
     naukriSessionUpdatedAt:    { type: Date },
     baytSession:               { type: String, select: false },
     baytSessionUpdatedAt:      { type: Date },
+
+    autopilotEnabled:   { type: Boolean, default: false },
+    autopilotLastRanAt: { type: Date },
 
     plan: { type: String, default: "free" },
   },

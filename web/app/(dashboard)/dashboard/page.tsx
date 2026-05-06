@@ -92,6 +92,7 @@ export default async function DashboardPage() {
         yearsExp: String((dbUser as { yearsExp?: number } | null)?.yearsExp ?? ""),
         niche: (dbUser as { niche?: string } | null)?.niche ?? "",
       }}
+      autopilotEnabled={!!(dbUser as { autopilotEnabled?: boolean } | null)?.autopilotEnabled}
       stats={{ totalApplied, totalViewed, totalReplied, totalInterview, totalRejected, replyRate, avgAts }}
       recentApps={JSON.parse(JSON.stringify(recentApps))}
       upcomingInterviews={JSON.parse(JSON.stringify(upcomingInterviews))}

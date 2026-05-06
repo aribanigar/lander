@@ -26,7 +26,9 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Check JWT claims first; fall back to the cookie set by /api/onboarding
   // because Clerk's JWT takes up to ~60 s to propagate publicMetadata updates.
-  const jwtComplete = !!(sessionClaims?.metadata as Record<string, unknown>)?.onboardingComplete;
+  // Clerk stores publicMetadata at sessionClaims.metadata in the default JWT template.
+  const meta = (sessionClaims?.metadata ?? sessionClaims?.publicMetadata ?? {}) as Record<string, unknown>;
+  const jwtComplete = !!meta?.onboardingComplete;
   const cookieComplete = req.cookies.get("__landed_ob")?.value === "1";
   const onboardingComplete = jwtComplete || cookieComplete;
 

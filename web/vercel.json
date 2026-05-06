@@ -1,6 +1,10 @@
 {
   "crons": [
     {
+      "path": "/api/autopilot/run",
+      "schedule": "0 6 * * *"
+    },
+    {
       "path": "/api/gmail/scan",
       "schedule": "0 8 * * *"
     }

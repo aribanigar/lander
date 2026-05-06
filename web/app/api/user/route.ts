@@ -26,6 +26,7 @@ export async function PATCH(req: NextRequest) {
     "salaryMin", "salaryMax", "linkedinUrl",
     "notifyOnApply", "notifyOnPositiveReply", "notifyOnRejection",
     "emailNotifications", "dailyApplyLimit",
+    "autopilotEnabled",
   ];
 
   const update: Record<string, unknown> = {};
