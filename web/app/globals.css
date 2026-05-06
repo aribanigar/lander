@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --page: #e8ebe5;
+  --card: #ffffff;
+  --card-off: #f4f5f1;
+  --lime: #cce832;
+  --lime-bg: #e9f5a0;
+  --lime-dark: #4e5f0e;
+  --ink: #18191a;
+  --ink-2: #5a5f57;
+  --ink-3: #97a094;
+  --dark: #1a1e16;
+  --dark-2: #262c20;
+  --border: rgba(24, 25, 26, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(24,25,26,0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(24,25,26,0.25); }
+
+/* Clerk overrides — match our design */
+.cl-rootBox,
+.cl-card {
+  background: var(--card) !important;
+  border: 0.5px solid var(--border) !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+.cl-headerTitle {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.4px !important;
+  color: var(--ink) !important;
+}
+
+.cl-formButtonPrimary {
+  background: var(--ink) !important;
+  color: var(--lime) !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 13px !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+}
+
+.cl-formButtonPrimary:hover {
+  background: var(--dark-2) !important;
+  opacity: 0.9 !important;
+}
+
+.cl-socialButtonsBlockButton {
+  border: 0.5px solid var(--border) !important;
+  border-radius: 11px !important;
+  background: var(--card-off) !important;
+}
+
+.cl-formFieldInput {
+  border: 0.5px solid var(--border) !important;
+  border-radius: 11px !important;
+  background: var(--card-off) !important;
+  font-family: 'DM Sans', sans-serif !important;
+  color: var(--ink) !important;
+}
+
+.cl-formFieldInput:focus {
+  border-color: rgba(24,25,26,0.25) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Utility classes matching the HTML mockups */
+@layer components {
+  .card {
+    @apply bg-white rounded-card p-5 border border-solid;
+    border-color: var(--border);
+    border-width: 0.5px;
+  }
+  .card-lime {
+    @apply rounded-card p-5;
+    background: var(--lime);
+  }
+  .card-dark {
+    @apply rounded-card p-5;
+    background: var(--dark);
+  }
+  .card-off {
+    @apply rounded-card p-5;
+    background: var(--card-off);
+    border: 0.5px solid var(--border);
+  }
+  .badge-green {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium font-mono;
+    background: rgba(100,190,80,0.12);
+    color: #2d6b1a;
+  }
+  .badge-amber {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium font-mono;
+    background: rgba(220,160,40,0.12);
+    color: #7a5310;
+  }
+  .badge-blue {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium font-mono;
+    background: rgba(60,120,220,0.1);
+    color: #1a4a9e;
+  }
+  .badge-red {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium font-mono;
+    background: rgba(220,70,70,0.1);
+    color: #8b1a1a;
+  }
+  .badge-muted {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium font-mono;
+    background: rgba(24,25,26,0.06);
+    color: var(--ink-2);
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer transition-opacity hover:opacity-85;
+    background: var(--ink);
+    color: var(--lime);
+    font-family: 'DM Mono', monospace;
+    border: none;
+  }
+  .btn-lime {
+    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer transition-opacity hover:opacity-85;
+    background: var(--lime);
+    color: var(--lime-dark);
+    border: none;
+  }
+  /* Typeform-style inputs */
+  .tf-input {
+    @apply w-full bg-transparent border-0 border-b-2 border-white/20 text-white text-3xl font-medium
+           pb-3 outline-none placeholder:text-white/20 focus:border-[#cce832] transition-colors;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tf-input-sm {
+    @apply w-full bg-white/5 border border-white/10 rounded-xl text-white text-base font-medium
+           px-4 py-3 outline-none placeholder:text-white/20 focus:border-[#cce832] transition-colors;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer transition-opacity hover:opacity-75;
+    background: var(--card);
+    color: var(--ink-2);
+    border: 0.5px solid var(--border);
+  }
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    @apply my-3;
+  }
+}

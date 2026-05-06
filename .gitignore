@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+dist/
+out/
+build/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.*.local
+*.env
+
+# Vercel
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/var/log/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Worker dist
+worker/dist/
+
+# Test coverage
+coverage/
