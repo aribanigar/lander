@@ -354,7 +354,7 @@ export default function LandingPage() {
             &copy; {new Date().getFullYear()} Landed. Built for senior professionals.
           </div>
           <div className="flex gap-4 text-xs text-white/30">
-            <Link href="#" className="hover:text-white/60 transition-colors">Privacy</Link>
+            <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy</Link>
             <Link href="#" className="hover:text-white/60 transition-colors">Terms</Link>
           </div>
         </div>
