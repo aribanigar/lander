@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/gmail/scan",
-      "schedule": "*/15 * * * *"
+      "schedule": "0 8 * * *"
     }
   ]
 }
